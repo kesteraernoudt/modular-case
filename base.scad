@@ -14,7 +14,7 @@ rim_height = 1.2; // [.5: .1: 2]
 /* [PCB Dimensions] */
 
 // type of uC
-board = 0; //[0: Custom, 1:Arduino_Nano, 2:Arduino_Mega, 3:Arduino_Uno, 4:Feather_HUZZAH, 5:NodeMCUv2, 6:NodeMCUv3, 7:Raspberry_Pi_ZeroW]
+board = 0; //[0: Custom, 1:Arduino_Nano, 2:Arduino_Mega, 3:Arduino_Uno, 4:Feather_HUZZAH, 5:NodeMCUv2, 6:NodeMCUv3, 7:Raspberry_Pi_ZeroW, 8:WemosD1miniV2]
 
 // width of a PCB (only for Custom)
 board_width = 26; //[10:0.1:150]
@@ -157,8 +157,9 @@ module base(base_radius, wall_thickness, board, port_width, port_height, port_yp
 	board_size6 = board==5?[ 48   , 26   ]:board_size5; // NodeMCUv2
 	board_size7 = board==6?[ 51   , 31   ]:board_size6; // NodeMCUv3
 	board_size8 = board==7?[ 65   , 30   ]:board_size7; // Raspberry_Pi_ZeroW
+	board_size9 = board==8?[ 34.5 , 25.5 ]:board_size8; // WemosD1miniV2
 
-	board_size = board_size8; // use last variable from table above here
+	board_size = board_size9; // use last variable from table above here
 
 	// port dimensions [width, height, ypos, zpos]
 	port1 = board==0?[port_width, port_height, port_ypos, port_zpos]:[10,16,5,0]; //custom
@@ -169,8 +170,9 @@ module base(base_radius, wall_thickness, board, port_width, port_height, port_yp
 	port6 = board==5?[ 10, 7, 13  , -4.5 ]:port5; // NodeMCUv2
 	port7 = board==6?[ 10, 7, 15.5, -4.5 ]:port6; // NodeMCUv3
 	port8 = board==7?[ 1,1,1,1   ]:port7; // Raspberry_Pi_ZeroW
+	port9 = board==8?[ 10,7,13.25,-4.5   ]:port8; // WemosD1miniV2
 
-	port = port8; // use last variable from table above here
+	port = port9; // use last variable from table above here
 
 	_base(base_radius, wall_thickness, board_size[0], board_size[1], port[0], port[1], port[2], port[3]);
 }
