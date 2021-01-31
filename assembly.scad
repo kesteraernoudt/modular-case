@@ -15,7 +15,7 @@ rim_height = 1.2; // [.5: .1: 2]
 /* [Base Module] */
 
 //type of uC
-board = 0; //[0: Custom, 1:Arduino_Nano, 2:Arduino_Mega, 3:Arduino_Uno, 4:Feather_HUZZAH, 5:NodeMCUv2, 6:NodeMCUv3, 7:Raspberry_Pi_ZeroW]
+board = 8; //[0: Custom, 1:Arduino_Nano, 2:Arduino_Mega, 3:Arduino_Uno, 4:Feather_HUZZAH, 5:NodeMCUv2, 6:NodeMCUv3, 7:Raspberry_Pi_ZeroW, 8:8:WemosD1miniV2]
 
 // width of a PCB (only for Custom)
 board_width = 26; //[10:0.1:150]
@@ -41,11 +41,22 @@ create_empty = false;
 // height of the empty module
 empty_height = 30; // [10:1:60]
 
+/* [Led Module] */
+
+// create a led module
+create_led = true;
+
+// height of the empty module
+led_height = 30; // [10:1:60]
+
+// led diameter
+led_diameter = 5;
+
 /* [OLED Module] */
 create_oled = true;
 
 // type of display
-display = 0; //[0: Custom, 1:OLED 0.96, 2:OLED 1.3]
+display = 1; //[0: Custom, 1:OLED 0.96, 2:OLED 1.3]
 
 // width of the display
 oled_width = 35; //[10:1:100]
@@ -97,13 +108,16 @@ cap_color = "Snow";
 use <base.scad>
 use <module_empty.scad>
 use <module_oled.scad>
+use <module_led.scad>
 use <module_enclosure.scad>
 use <cap_dome.scad>
 
 enclosure_module_start = create_empty?base_height()+empty_height:base_height();
 oled_module_start = create_enclosure?enclosure_module_start+enclosure_module_height:enclosure_module_start;
 oled_module_height = oled_pcb_height + 2*wall_thickness + 1;
-dome_cap_start = create_oled?oled_module_start+oled_module_height:oled_module_start;
+led_module_start = create_oled?oled_module_start+oled_module_height:oled_module_start;
+led_module_height = led_height;
+dome_cap_start = create_led?led_module_start+led_module_height:led_module_start;
 
 union() {
 	color(base_color)
@@ -123,6 +137,12 @@ union() {
 		translate([0,0,oled_module_start])
 			color(module_color)
 				oled(base_radius, wall_thickness, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position);
+    
+    if (create_led)
+		translate([0,0,led_module_start])
+			color(module_color)
+        led(base_radius, led_module_height, wall_thickness, enable_rim, led_diameter);
+
 
     if (create_dome_cap)
 		translate([0,0,dome_cap_start])
