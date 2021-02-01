@@ -57,8 +57,8 @@ class ColoredStlExporter(object):
         self.input_file = input_file
         self.intermediate_folder = os.path.join(build_folder, 'intermediate')
         self.output_folder = os.path.join(build_folder, 'colored_stl')
-        if openscad_variables is None:
-            openscad_variables = {}
+        #if openscad_variables is None:
+        #    openscad_variables = {}
         self.openscad_variables = openscad_variables
 
     def run(self):
@@ -81,7 +81,7 @@ class ColoredStlExporter(object):
         pool.close()
         pool.join()
 
-        with open(os.path.join(self.output_folder, 'manifest.json'), 'wb') as f:
+        with open(os.path.join(self.output_folder, 'manifest.json'), 'w') as f:
             f.write(json.dumps(manifest, indent=4))
 
     def _extract_colors(self):
@@ -112,7 +112,7 @@ module color_extractor(c) {
 
         # Parse the color values from the output
         color_values = set()
-        with open(echo_file, 'rb') as f:
+        with open(echo_file, 'r') as f:
             for line in f:
                 match = EXTRACTED_COLOR_REGEX.search(line)
                 if match:
@@ -133,7 +133,7 @@ module color_extractor(c) {
         }}
                     '''.format(color)
 
-        color_hash = hashlib.sha256(color).hexdigest()
+        color_hash = hashlib.sha256(color.encode('utf-8')).hexdigest()
 
         intermediate_subfolder = os.path.join(self.intermediate_folder, 'color_' + color_hash)
         self.walk_and_mutate_scad_files(replace_with_color_selector, intermediate_subfolder)
@@ -160,7 +160,7 @@ module color_extractor(c) {
             current_file = to_process.pop(0)
             self.logger.debug('Processing {}'.format(current_file))
 
-            with open(current_file, 'rb') as f:
+            with open(current_file, 'r') as f:
                 contents = f.read()
 
             # Only process .scad files; copy any other file types (e.g. fonts) over as-is
@@ -181,13 +181,13 @@ module color_extractor(c) {
                 contents = mutate_function(USE_INCLUDE_REGEX.sub(replace, contents))
 
             with open(os.path.join(intermediate_subfolder,
-                                   ColoredStlExporter.get_transformed_file_path(current_file)), 'wb') as out_file:
+                                   ColoredStlExporter.get_transformed_file_path(current_file)), 'w') as out_file:
                 out_file.write(contents)
 
     @staticmethod
     def get_transformed_file_path(original_path):
         extension = os.path.splitext(original_path)[1]
-        return hashlib.sha256(os.path.realpath(original_path)).hexdigest() + extension
+        return hashlib.sha256(os.path.realpath(original_path).encode('utf-8')).hexdigest() + extension
 
     @staticmethod
     def parse_openscad_color(color):

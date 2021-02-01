@@ -14,6 +14,10 @@ enable_rim = true;
 rim_height = 1.2; // [.5: .1: 2]
 // led diameter
 led_diameter = 5.0;
+// enable led on front
+led_front = true;
+// enable led on back
+led_back = false;
 
 /* [Hidden] */
 
@@ -22,11 +26,14 @@ base_radius = base_diameter / 2;
 
 use <common.scad>
 
-module led(base_radius, led_height, wall_thickness, enable_rim, led_diameter) {
+module led(base_radius, led_height, wall_thickness, enable_rim, led_diameter, led_front, led_back) {
 	// outer shell
     difference() {
         shell(base_radius*2, led_height, wall_thickness, false);
-        translate([base_radius-wall_thickness/2, 0, led_height/2]) rotate([0,90,0]) cylinder(h=wall_thickness*2, d=led_diameter, center=true);
+        if (led_back)
+            translate([base_radius-wall_thickness/2, 0, led_height/2]) rotate([0,90,0]) cylinder(h=wall_thickness*2, d=led_diameter, center=true);
+        if (led_front)
+            translate([-(base_radius-wall_thickness/2), 0, led_height/2]) rotate([0,90,0]) cylinder(h=wall_thickness*2, d=led_diameter, center=true);
     }
 
 	// male connectors (to module below)
@@ -42,4 +49,4 @@ module led(base_radius, led_height, wall_thickness, enable_rim, led_diameter) {
 	}
 }
 
-led(base_radius, module_height, wall_thickness, enable_rim, led_diameter);
+led(base_radius, module_height, wall_thickness, enable_rim, led_diameter, led_front, led_back);

@@ -19,6 +19,7 @@ import logging
 import numbers
 import re
 import subprocess
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +73,7 @@ def run(
 
     if variables is not None:
         for k, v in variables.items():
-            if isinstance(v, basestring):
+            if isinstance(v, str):
                 value = '"%s"' % v.replace('"', '\\"')
             elif v is True:
                 value = 'true'
@@ -92,7 +93,8 @@ def run(
 
     stdout_type = subprocess.PIPE if capture_output else None
     stderr_type = subprocess.PIPE if capture_output else None
-    proc = subprocess.Popen(command, stdout=stdout_type, stderr=stderr_type)
+    logger.debug(f"Running '{command}'")
+    proc = subprocess.Popen(command, stdout=stdout_type, stderr=stderr_type, text=True, cwd=os.path.dirname(input_file))
     stdout, stderr = proc.communicate()
     returncode = proc.returncode
 

@@ -20,11 +20,18 @@ from __future__ import print_function
 import logging
 import os
 import sys
+import numbers
 
 from colored_stl_exporter import ColoredStlExporter
 
 repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(repo_root)
+
+if "OPENSCADPATH" in os.environ:
+    os.environ["OPENSCADPATH"] += os.pathsep + repo_root
+else:
+    os.environ["OPENSCADPATH"] = repo_root
+
 
 import rev_info
 
