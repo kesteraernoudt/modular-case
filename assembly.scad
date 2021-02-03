@@ -52,8 +52,8 @@ led_front = true;
 // enable led on back
 led_back = false;
 
-// height of the empty module
-led_height = 30; // [10:1:60]
+// height of the led module
+led_height = 16; //[12:1:100]
 
 // led diameter
 led_diameter = 5;
@@ -65,15 +65,15 @@ create_oled = true;
 display = 1; //[0: Custom, 1:OLED 0.96, 2:OLED 1.3]
 
 // width of the display
-oled_width = 35; //[10:1:100]
+oled_width = 28; //[10:1:100]
 // height of the display
-oled_height = 18; //[10:1:100]
+oled_height = 15; //[10:1:100]
 // width of the pcb
-oled_pcb_width = 36; //[10:1:100]
+oled_pcb_width = 29; //[10:1:100]
 // height of the pcb
-oled_pcb_height = 34; //[10:1:100]
+oled_pcb_height = 28; //[10:1:100]
 // position of the display (lower edge)
-oled_y_position = 9.0;
+oled_y_position = 6.0;
 
 /* [Sensor Enclosure] */
 create_enclosure = true;
@@ -149,7 +149,7 @@ union() {
 	if (create_oled)
 		translate([0,0,oled_module_start])
 			color(oled_color)
-				oled(base_radius, wall_thickness, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position);
+				oled(base_radius, wall_thickness, display, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position);
     
     if (create_led)
 		translate([0,0,led_module_start])
