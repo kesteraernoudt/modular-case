@@ -1,6 +1,8 @@
 // Unfortunately, customizable parameters have to be in the main file,
 // although they are used in the libraries
 
+show_gaps = true;
+
 /* [Case Dimensions] */
 
 // diameter of the base
@@ -105,7 +107,7 @@ cap_dome_rest_height = 2.5; //[1:0.5:10]
 
 /* [Hidden] */
 
-$fn = 128;
+//$fn = 128;
 base_radius = base_diameter / 2;
 base_color = [1,0.1,0];//"CornflowerBlue";
 empty_color = [1,.5,0];
@@ -122,14 +124,15 @@ use <module_led.scad>
 use <module_enclosure.scad>
 use <cap_dome.scad>
 
-empty_module_start = create_base?base_height():0;
+gap_height = show_gaps?10:0;
+empty_module_start = create_base?base_height()+gap_height:0;
 empty_module_height = empty_height;
-enclosure_module_start = create_empty?empty_module_start+empty_module_height:empty_module_start;
-oled_module_start = create_enclosure?enclosure_module_start+enclosure_module_height:enclosure_module_start;
+enclosure_module_start = create_empty?empty_module_start+empty_module_height+gap_height:empty_module_start;
+oled_module_start = create_enclosure?enclosure_module_start+enclosure_module_height+gap_height:enclosure_module_start;
 oled_module_height = oled_pcb_height + 2*wall_thickness + 1;
-led_module_start = create_oled?oled_module_start+oled_module_height:oled_module_start;
+led_module_start = create_oled?oled_module_start+oled_module_height+gap_height:oled_module_start;
 led_module_height = led_height;
-dome_cap_start = create_led?led_module_start+led_module_height:led_module_start;
+dome_cap_start = create_led?led_module_start+led_module_height+gap_height:led_module_start;
 
 union() {
     if (create_base)
