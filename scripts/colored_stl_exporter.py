@@ -43,7 +43,7 @@ from multiprocessing.dummy import Pool
 
 import openscad
 
-USE_INCLUDE_REGEX = re.compile(r'\b(?P<statement>use|include)\s*<\s*(?P<filename>.*?)\s*>\s*;')
+USE_INCLUDE_REGEX = re.compile(r'\b(?P<statement>use|include)\s*<\s*(?P<filename>.*?)\s*>\s*')
 COLOR_REGEX = re.compile(r'\bcolor\s*\(')
 EXTRACTED_COLOR_REGEX = re.compile(r'ECHO: extracted_color = (?P<color>.*)')
 
@@ -169,6 +169,7 @@ module color_extractor(c) {
                 for include in USE_INCLUDE_REGEX.finditer(contents):
                     next_filename = os.path.realpath(
                         os.path.join(current_folder, include.group('filename')))
+                    self.logger.debug(f"Found include file {next_filename}")
                     if next_filename not in visited:
                         to_process.append(next_filename)
                         visited.add(next_filename)
