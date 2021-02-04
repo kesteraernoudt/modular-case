@@ -151,7 +151,7 @@ union() {
     if (create_enclosure)
 		translate([0,0,enclosure_module_start])
 			color(enclosure_color)
-				sensor_enclosure(enclosure_length, enclosure_width, base_radius, enclosure_module_height, enclosure_height, enclosure_wall_thickness, enclosure_port_radius);
+				sensor_enclosure(enclosure_length, enclosure_width, base_radius, enclosure_module_height, enclosure_height, enclosure_wall_thickness, enclosure_port_radius, enable_rim);
 
 	if (create_oled)
 		translate([0,0,oled_module_start])

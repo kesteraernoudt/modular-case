@@ -81,12 +81,6 @@ module _oled(base_radius, wall_thickness, enable_rim, oled_width, oled_height, o
 				};
 			}
 
-			// spacer for rim of module below
-			if (enable_rim) {
-				// make spacer 25% taller and 20% wider than the rim itself
-				rim(base_radius, 0, wall_thickness - 0.2, rim_height * 1.25, 1.2);
-			}
-
 			// display cutout
 			translate([0, -oled_width/2, oled_y_position + wall_thickness])
 				cube([base_radius, oled_width, oled_height]);
