@@ -6,7 +6,7 @@ show_gaps = true;
 /* [Case Dimensions] */
 
 // diameter of the base
-base_diameter = 52; //[62.8:Small, 80:Medium, 100:Large, 130:XLarge]
+base_diameter = 52; //[52:Tiny, 62.8:Small, 80:Medium, 100:Large, 130:XLarge]
 // thickness of outer wall
 wall_thickness = 2; //[2:0.5:5]
 // enable rim
@@ -77,6 +77,9 @@ oled_pcb_height = 28; //[10:1:100]
 // position of the display (lower edge)
 oled_y_position = 6.0;
 
+// use screws or pins to fix oleds
+oled_use_screws_npins = false;
+
 /* [Sensor Enclosure] */
 create_enclosure = true;
 
@@ -108,6 +111,7 @@ cap_dome_rest_height = 2.5; //[1:0.5:10]
 /* [Hidden] */
 
 //$fn = 128;
+$fn = 40;
 base_radius = base_diameter / 2;
 base_color = [1,0.1,0];//"CornflowerBlue";
 empty_color = [1,.5,0];
@@ -152,7 +156,7 @@ union() {
 	if (create_oled)
 		translate([0,0,oled_module_start])
 			color(oled_color)
-				oled(base_radius, wall_thickness, display, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position);
+				oled(base_radius, wall_thickness, display, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position, oled_use_screws_npins);
     
     if (create_led)
 		translate([0,0,led_module_start])

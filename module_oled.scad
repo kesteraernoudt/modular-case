@@ -2,7 +2,7 @@
 /* [Case Dimensions] */
 
 // diameter of the base
-base_diameter = 62.8; //[62.8:Small, 80:Medium, 100:Large, 130:XLarge]
+base_diameter = 52; //[52:Tiny, 62.8:Small, 80:Medium, 100:Large, 130:XLarge] 
 // thickness of outer wall
 wall_thickness = 2; //[2:0.5:5]
 // enable rim
@@ -26,15 +26,21 @@ oled_pcb_height = 34; //[10:1:100]
 // position of the display (lower edge)
 oled_y_position = 9.0;
 
+// use screws or pins to fix oleds
+oled_use_screws_npins = false;
 // diameter of display screw
 oled_thread_diameter = 3;
 // pitch of display screw
 oled_thread_pitch = 0.5;
 
 /* [Hidden] */
-$fn = 128;
+//$fn = 128;
+$fn = 40;
 preview = false;
 base_radius = base_diameter / 2;
+
+oled_pin_d1 = 1.2;
+oled_pin_d2 = 2.2;
 
 use <common.scad>
 use <module_empty.scad>
@@ -56,7 +62,7 @@ module cutInner(radius, module_height)
 	}
 }
 
-module _oled(base_radius, wall_thickness, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position) {
+module _oled(base_radius, wall_thickness, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position, oled_use_screws_npins) {
 	oled_module_height = oled_pcb_height + 2*wall_thickness + 1;
 
 	rotate([0,0,180])
@@ -112,42 +118,57 @@ module _oled(base_radius, wall_thickness, enable_rim, oled_width, oled_height, o
 			*/
 		}
 
-		// screw threads
-		difference() {
-			translate([base_radius-2*wall_thickness-6, -oled_width/2, oled_y_position + wall_thickness + oled_height+2])
-				cube([2,4,4]);
-			render() translate([base_radius-2*wall_thickness-6.1, -oled_width/2+2, oled_y_position + wall_thickness + oled_height+4])
-				rotate([0,90,0])
-					metric_thread(diameter=oled_thread_diameter, pitch=oled_thread_pitch, length=3, internal=true, test=preview);
-		}
+        if (oled_use_screws_npins) {
+            // screw threads
+            difference() {
+                translate([base_radius-2*wall_thickness-6, -oled_width/2, oled_y_position + wall_thickness + oled_height+2])
+                    cube([2,4,4]);
+                render() translate([base_radius-2*wall_thickness-6.1, -oled_width/2+2, oled_y_position + wall_thickness + oled_height+4])
+                    rotate([0,90,0])
+                        metric_thread(diameter=oled_thread_diameter, pitch=oled_thread_pitch, length=3, internal=true, test=preview);
+            }
 
-		difference() {
-			translate([base_radius-2*wall_thickness-6, oled_width/2-4, oled_y_position + wall_thickness + oled_height+2])
-				cube([2,4,4]);
-			render() translate([base_radius-2*wall_thickness-6.1, oled_width/2-2, oled_y_position + wall_thickness + oled_height+4])
-				rotate([0,90,0])
-					metric_thread(diameter=oled_thread_diameter, pitch=oled_thread_pitch, length=3, internal=true, test=preview);
-		}
+            difference() {
+                translate([base_radius-2*wall_thickness-6, oled_width/2-4, oled_y_position + wall_thickness + oled_height+2])
+                    cube([2,4,4]);
+                render() translate([base_radius-2*wall_thickness-6.1, oled_width/2-2, oled_y_position + wall_thickness + oled_height+4])
+                    rotate([0,90,0])
+                        metric_thread(diameter=oled_thread_diameter, pitch=oled_thread_pitch, length=3, internal=true, test=preview);
+            }
 
-		difference() {
-			translate([base_radius-2*wall_thickness-6, -oled_width/2, wall_thickness])
-				cube([2,4,4]);
-			render() translate([base_radius-2*wall_thickness-6.1, -oled_width/2+2, wall_thickness+2])
-				rotate([0,90,0])
-					metric_thread(diameter=oled_thread_diameter, pitch=oled_thread_pitch, length=3, internal=true, test=preview);
-		}
+            difference() {
+                translate([base_radius-2*wall_thickness-6, -oled_width/2, wall_thickness])
+                    cube([2,4,4]);
+                render() translate([base_radius-2*wall_thickness-6.1, -oled_width/2+2, wall_thickness+2])
+                    rotate([0,90,0])
+                        metric_thread(diameter=oled_thread_diameter, pitch=oled_thread_pitch, length=3, internal=true, test=preview);
+            }
 
-		difference() {
-			translate([base_radius-2*wall_thickness-6, oled_width/2-4, wall_thickness])
-				cube([2,4,4]);
-			render() translate([base_radius-2*wall_thickness-6.1, oled_width/2-2, wall_thickness+2])
-				rotate([0,90,0])
-					metric_thread(diameter=oled_thread_diameter, pitch=oled_thread_pitch, length=3, internal=true, test=preview);
-		}
+            difference() {
+                translate([base_radius-2*wall_thickness-6, oled_width/2-4, wall_thickness])
+                    cube([2,4,4]);
+                render() translate([base_radius-2*wall_thickness-6.1, oled_width/2-2, wall_thickness+2])
+                    rotate([0,90,0])
+                        metric_thread(diameter=oled_thread_diameter, pitch=oled_thread_pitch, length=3, internal=true, test=preview);
+            }
+        } else {
+            // use pins
+                translate([base_radius-2*wall_thickness-6, -oled_width/2+2, oled_y_position + wall_thickness + oled_height+4])
+                    rotate([0,90,0]) cylinder(h=6, d1=oled_pin_d1, d2=oled_pin_d2, center=true);
+
+                translate([base_radius-2*wall_thickness-6, oled_width/2-4+2, oled_y_position + wall_thickness + oled_height+2+2])
+                    rotate([0,90,0]) cylinder(h=6, d1=oled_pin_d1, d2=oled_pin_d2, center=true);
+
+                translate([base_radius-2*wall_thickness-6, -oled_width/2+2, wall_thickness+2])
+                    rotate([0,90,0]) cylinder(h=6, d1=oled_pin_d1, d2=oled_pin_d2, center=true);
+
+                 translate([base_radius-2*wall_thickness-6, oled_width/2-4+2, wall_thickness+2])
+                    rotate([0,90,0]) cylinder(h=6, d1=oled_pin_d1, d2=oled_pin_d2, center=true);
+       }
 	}
 }
 
-module oled(base_radius, wall_thickness, display, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position) {
+module oled(base_radius, wall_thickness, display, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position, oled_use_screws_npins) {
 	// display dimensions database (unique variables needed due to language restrictions)
 	display_size1 = display==0?[oled_width, oled_height]:[1,1]; // custom
 	display_size2 = display==1?[28, 15]:display_size1; // OLED 0.96"
@@ -169,7 +190,7 @@ module oled(base_radius, wall_thickness, display, enable_rim, oled_width, oled_h
 
 	y_offset = y_offset3; // use last variable from table above here
 
-	_oled(base_radius, wall_thickness, enable_rim, display_size[0], display_size[1], pcb_size[0], pcb_size[1], y_offset);
+	_oled(base_radius, wall_thickness, enable_rim, display_size[0], display_size[1], pcb_size[0], pcb_size[1], y_offset, oled_use_screws_npins);
 }
 
-oled(base_radius, wall_thickness, display, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position);
+oled(base_radius, wall_thickness, display, enable_rim, oled_width, oled_height, oled_pcb_width, oled_pcb_height, oled_y_position, oled_use_screws_npins);
